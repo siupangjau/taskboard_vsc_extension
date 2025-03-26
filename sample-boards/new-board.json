@@ -1,0 +1,204 @@
+{
+  "columns": [
+    {
+      "id": "todo",
+      "name": "To Do",
+      "tickets": [
+        {
+          "id": "ticket-1743013880121",
+          "title": "new",
+          "description": "jewewwe",
+          "status": "todo",
+          "createdAt": "2025-03-26T18:52:58.943Z",
+          "updatedAt": "2025-03-26T20:37:10.780Z"
+        },
+        {
+          "id": "ticket-1743013880119",
+          "title": "new",
+          "description": "nẹtnwer",
+          "status": "todo",
+          "createdAt": "2025-03-26T18:51:49.536Z",
+          "updatedAt": "2025-03-26T20:37:12.881Z"
+        }
+      ]
+    },
+    {
+      "id": "in-progress",
+      "name": "In Progress",
+      "tickets": [
+        {
+          "id": "ticket-1743013538878",
+          "title": "adfasdf",
+          "description": "ádfsadfadsf",
+          "status": "in-progress",
+          "createdAt": "2025-03-26T18:25:38.878Z",
+          "updatedAt": "2025-03-26T18:25:38.878Z"
+        },
+        {
+          "id": "ticket-1743019008520",
+          "title": "new ticket",
+          "description": "lalala",
+          "status": "in-progress",
+          "createdAt": "2025-03-26T19:56:48.520Z",
+          "updatedAt": "2025-03-26T19:56:48.520Z"
+        },
+        {
+          "id": "ticket-1743019036547",
+          "title": "dlkfjasdlkfasf",
+          "description": "ádfadsfasdfasd",
+          "status": "in-progress",
+          "createdAt": "2025-03-26T19:57:16.547Z",
+          "updatedAt": "2025-03-26T20:10:10.943Z"
+        },
+        {
+          "id": "ticket-1743013170331",
+          "title": "aaaa",
+          "description": " bbbbb",
+          "status": "in-progress",
+          "createdAt": "2025-03-26T18:19:30.331Z",
+          "updatedAt": "2025-03-26T20:10:17.080Z"
+        },
+        {
+          "id": "ticket-1743021424903",
+          "title": "adsfadfa",
+          "description": "dsfasfadsf",
+          "status": "in-progress",
+          "createdAt": "2025-03-26T20:37:04.903Z",
+          "updatedAt": "2025-03-26T20:37:07.092Z"
+        }
+      ]
+    },
+    {
+      "id": "done",
+      "name": "Done",
+      "tickets": [
+        {
+          "id": "ticket-1743019018308",
+          "title": "new",
+          "description": "đaasdsa",
+          "status": "done",
+          "createdAt": "2025-03-26T19:56:58.308Z",
+          "updatedAt": "2025-03-26T19:56:58.308Z"
+        },
+        {
+          "id": "ticket-1743019130207",
+          "title": "ewwe",
+          "description": "ádsafd",
+          "status": "done",
+          "createdAt": "2025-03-26T19:58:50.207Z",
+          "updatedAt": "2025-03-26T19:58:50.207Z"
+        },
+        {
+          "id": "ticket-1743019148444",
+          "title": "done123",
+          "description": "12321434",
+          "status": "done",
+          "createdAt": "2025-03-26T19:59:08.444Z",
+          "updatedAt": "2025-03-26T19:59:08.444Z"
+        }
+      ]
+    },
+    {
+      "id": "deleted",
+      "name": "Deleted",
+      "tickets": [
+        {
+          "id": "ticket-1743013120689",
+          "title": "ticket1",
+          "description": "ticket",
+          "status": "deleted",
+          "createdAt": "2025-03-26T18:18:40.689Z",
+          "updatedAt": "2025-03-26T20:02:03.577Z"
+        },
+        {
+          "id": "ticket-1743015636855",
+          "title": "just create ticket",
+          "description": "hello",
+          "status": "deleted",
+          "createdAt": "2025-03-26T19:00:36.855Z",
+          "updatedAt": "2025-03-26T20:05:16.089Z"
+        },
+        {
+          "id": "ticket-1743018887801",
+          "title": "ewew",
+          "description": "ewewewe",
+          "status": "deleted",
+          "createdAt": "2025-03-26T19:54:47.801Z",
+          "updatedAt": "2025-03-26T20:05:18.236Z"
+        },
+        {
+          "id": "ticket-1743015323852",
+          "title": "done ticket",
+          "description": "helllo kittty",
+          "status": "deleted",
+          "createdAt": "2025-03-26T18:55:23.852Z",
+          "updatedAt": "2025-03-26T20:05:19.924Z"
+        },
+        {
+          "id": "ticket-1743013147545",
+          "title": "ticket2",
+          "description": "ticket2",
+          "status": "deleted",
+          "createdAt": "2025-03-26T18:19:07.545Z",
+          "updatedAt": "2025-03-26T20:05:22.134Z"
+        },
+        {
+          "id": "ticket-1743013880118",
+          "title": "aaa",
+          "description": "adfdfdf",
+          "status": "deleted",
+          "createdAt": "2025-03-26T18:31:20.118Z",
+          "updatedAt": "2025-03-26T20:05:23.892Z"
+        },
+        {
+          "id": "ticket-1743013880120",
+          "title": "ticket new",
+          "description": "new new new",
+          "status": "deleted",
+          "createdAt": "2025-03-26T18:52:01.206Z",
+          "updatedAt": "2025-03-26T20:05:25.338Z"
+        },
+        {
+          "id": "ticket-1743013322371",
+          "title": "aa",
+          "description": "aaaa",
+          "status": "deleted",
+          "createdAt": "2025-03-26T18:22:02.371Z",
+          "updatedAt": "2025-03-26T20:06:53.297Z"
+        },
+        {
+          "id": "ticket-1743013164550",
+          "title": "ticket ticket",
+          "description": "ticket ticket",
+          "status": "deleted",
+          "createdAt": "2025-03-26T18:19:24.550Z",
+          "updatedAt": "2025-03-26T20:06:55.349Z"
+        },
+        {
+          "id": "ticket-1743013156202",
+          "title": "ticket2",
+          "description": "ticket",
+          "status": "deleted",
+          "createdAt": "2025-03-26T18:19:16.202Z",
+          "updatedAt": "2025-03-26T20:06:57.255Z"
+        },
+        {
+          "id": "ticket-1743013397935",
+          "title": "tttt",
+          "description": "tttttt",
+          "status": "deleted",
+          "createdAt": "2025-03-26T18:23:17.935Z",
+          "updatedAt": "2025-03-26T20:10:02.714Z"
+        },
+        {
+          "id": "ticket-1743019807597",
+          "title": "ticket1",
+          "description": "hádfkjhaksdhadg",
+          "status": "deleted",
+          "createdAt": "2025-03-26T20:10:07.597Z",
+          "updatedAt": "2025-03-26T20:37:01.569Z"
+        }
+      ]
+    }
+  ]
+}

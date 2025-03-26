@@ -1,0 +1,53 @@
+{
+  "columns": [
+    {
+      "id": "todo",
+      "title": "To Do",
+      "ticketIds": ["ticket-1", "ticket-2"]
+    },
+    {
+      "id": "in-progress",
+      "title": "In Progress",
+      "ticketIds": ["ticket-3"]
+    },
+    {
+      "id": "done",
+      "title": "Done",
+      "ticketIds": ["ticket-4"]
+    }
+  ],
+  "tickets": {
+    "ticket-1": {
+      "id": "ticket-1",
+      "title": "Implement drag and drop",
+      "description": "Add drag and drop functionality to move tickets between columns",
+      "status": "todo",
+      "createdAt": "2024-03-26T16:00:00.000Z",
+      "updatedAt": "2024-03-26T16:00:00.000Z"
+    },
+    "ticket-2": {
+      "id": "ticket-2",
+      "title": "Add ticket creation",
+      "description": "Implement functionality to create new tickets",
+      "status": "todo",
+      "createdAt": "2024-03-26T16:00:00.000Z",
+      "updatedAt": "2024-03-26T16:00:00.000Z"
+    },
+    "ticket-3": {
+      "id": "ticket-3",
+      "title": "File synchronization",
+      "description": "Implement file watching and auto-sync",
+      "status": "in-progress",
+      "createdAt": "2024-03-26T16:00:00.000Z",
+      "updatedAt": "2024-03-26T16:00:00.000Z"
+    },
+    "ticket-4": {
+      "id": "ticket-4",
+      "title": "Project setup",
+      "description": "Set up initial project structure and dependencies",
+      "status": "done",
+      "createdAt": "2024-03-26T16:00:00.000Z",
+      "updatedAt": "2024-03-26T16:00:00.000Z"
+    }
+  }
+} 
