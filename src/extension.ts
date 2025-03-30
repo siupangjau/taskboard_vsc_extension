@@ -149,11 +149,11 @@ export function activate(context: vscode.ExtensionContext) {
 				);
 
 				const webviewJsUri = currentPanel.webview.asWebviewUri(
-					vscode.Uri.joinPath(context.extensionUri, 'out', 'webview.js')
+					vscode.Uri.joinPath(context.extensionUri, 'extension', 'out', 'webview.js')
 				);
 
 				// Set up initial content
-				currentPanel.webview.html = getWebviewContent(webviewJsUri);
+				currentPanel.webview.html = getWebviewContent(webviewJsUri, context);
 
 				// Handle messages from the webview
 				currentPanel.webview.onDidReceiveMessage(async (message) => {
@@ -245,9 +245,9 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(showBoardCommand);
 }
 
-function getWebviewContent(webviewJsUri: vscode.Uri): string {
+function getWebviewContent(webviewJsUri: vscode.Uri, context: vscode.ExtensionContext): string {
 	const codiconsUri = currentPanel?.webview.asWebviewUri(
-		vscode.Uri.joinPath(vscode.Uri.file(__dirname), '../node_modules/@vscode/codicons/dist/codicon.css')
+		vscode.Uri.joinPath(context.extensionUri, 'extension', 'out', 'codicons', 'codicon.css')
 	);
 
 	return `<!DOCTYPE html>
