@@ -1,0 +1,46 @@
+{
+  "columns": [
+    {
+      "id": "todo",
+      "name": "To Do",
+      "tickets": [
+        {
+          "id": "ticket-1743026715776",
+          "title": "ticket 1",
+          "description": "ticket 1",
+          "status": "todo",
+          "createdAt": "2025-03-26T22:05:15.776Z",
+          "updatedAt": "2025-03-26T22:05:15.776Z"
+        }
+      ]
+    },
+    {
+      "id": "in-progress",
+      "name": "In Progress",
+      "tickets": [
+        {
+          "id": "ticket-1743026721893",
+          "title": "ticket 2",
+          "description": "ticket 2",
+          "status": "in-progress",
+          "createdAt": "2025-03-26T22:05:21.893Z",
+          "updatedAt": "2025-03-26T22:05:21.893Z"
+        }
+      ]
+    },
+    {
+      "id": "done",
+      "name": "Done",
+      "tickets": [
+        {
+          "id": "ticket-1743026727149",
+          "title": "ticket 3",
+          "description": "ticket 3",
+          "status": "done",
+          "createdAt": "2025-03-26T22:05:27.149Z",
+          "updatedAt": "2025-03-26T22:05:31.423Z"
+        }
+      ]
+    }
+  ]
+}

@@ -7,13 +7,14 @@ import { StorageService } from './services/storageService';
 import { Board, BoardFile, BoardFileType, Column, TicketStatus } from './types';
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
+let fileService: FileService | undefined = undefined;
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Extension: TaskBoard is now active');
 
-	const fileService = new FileService();
+	fileService = new FileService();
 	const storageService = new StorageService(context.workspaceState);
 
 	const columnToCreate: Column[] = [
@@ -42,6 +43,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 		if (!fileUri) {
 			throw new Error('No file location selected');
+		}
+
+		if (!fileService) {
+			throw new Error('File service not initialized');
 		}
 
 		const initialBoard: Board = {
@@ -106,7 +111,7 @@ export function activate(context: vscode.ExtensionContext) {
 	let showBoardCommand = vscode.commands.registerCommand('taskboard.showBoard', async () => {
 		try {
 			const boardFile = storageService.getLastOpenedFile();
-			
+
 			if (!boardFile) {
 				const message = 'No board is currently open. Would you like to create a new one or open an existing one?';
 				const choice = await vscode.window.showQuickPick(
@@ -124,6 +129,10 @@ export function activate(context: vscode.ExtensionContext) {
 					vscode.commands.executeCommand('taskboard.openBoard');
 				}
 				return;
+			}
+
+			if (!fileService) {
+				throw new Error('File service not initialized');
 			}
 
 			if (currentPanel) {
@@ -149,7 +158,11 @@ export function activate(context: vscode.ExtensionContext) {
 				// Handle messages from the webview
 				currentPanel.webview.onDidReceiveMessage(async (message) => {
 					console.log('Received message from webview:', message);
-					
+
+					if (!fileService) {
+						throw new Error('File service not initialized');
+					}
+
 					switch (message.type) {
 						case 'boardUpdated':
 							try {
@@ -161,12 +174,36 @@ export function activate(context: vscode.ExtensionContext) {
 								vscode.window.showErrorMessage(`Error saving board: ${error}`);
 							}
 							break;
+						case 'requestBoardData':
+							try {
+								console.log('Loading board data from:', boardFile.path);
+								const board = await fileService.readFile(boardFile.path) as Board;
+								if (currentPanel) {
+									currentPanel.webview.postMessage({
+										type: 'boardData',
+										board
+									});
+									console.log('Board data sent to webview');
+								}
+							} catch (error) {
+								console.error('Error reading board:', error);
+								if (currentPanel) {
+									currentPanel.webview.postMessage({
+										type: 'error',
+										error: `Error reading board: ${error}`
+									});
+								}
+							}
+							break;
 					}
 				});
 
 				// Watch for file changes
 				fileService.watchFile(boardFile.path, async () => {
 					try {
+						if (!fileService) {
+							throw new Error('File service not initialized');
+						}
 						const board = await fileService.readFile(boardFile.path) as Board;
 						currentPanel?.webview.postMessage({
 							type: 'boardData',
@@ -192,7 +229,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 				currentPanel.onDidDispose(() => {
 					currentPanel = undefined;
-					fileService.dispose();
+					if (fileService) {
+						fileService.dispose();
+					}
 				});
 			}
 		} catch (error) {
@@ -207,31 +246,29 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function getWebviewContent(webviewJsUri: vscode.Uri): string {
+	const codiconsUri = currentPanel?.webview.asWebviewUri(
+		vscode.Uri.joinPath(vscode.Uri.file(__dirname), '../node_modules/@vscode/codicons/dist/codicon.css')
+	);
+
 	return `<!DOCTYPE html>
 		<html lang="en">
 		<head>
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${currentPanel?.webview.cspSource} https:; script-src ${currentPanel?.webview.cspSource} 'unsafe-inline'; style-src ${currentPanel?.webview.cspSource} 'unsafe-inline';">
+			<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${currentPanel?.webview.cspSource} https:; script-src ${currentPanel?.webview.cspSource} 'unsafe-inline' 'unsafe-eval'; style-src ${currentPanel?.webview.cspSource} 'unsafe-inline'; font-src ${currentPanel?.webview.cspSource};">
 			<title>Kanban Board</title>
+			<link href="${codiconsUri}" rel="stylesheet" />
 			<style>
 				body {
 					margin: 0;
 					padding: 0;
 					height: 100vh;
 					overflow: hidden;
+					background-color: var(--vscode-editor-background);
+					color: var(--vscode-editor-foreground);
 				}
 				#root {
 					height: 100vh;
-				}
-				/* Drag and drop styles */
-				.dragging {
-					opacity: 0.5 !important;
-					transform: scale(1.02) !important;
-					box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
-				}
-				.dragging-over {
-					background-color: var(--vscode-editor-selectionBackground) !important;
 				}
 			</style>
 			<script>
@@ -248,5 +285,7 @@ function getWebviewContent(webviewJsUri: vscode.Uri): string {
 
 // This method is called when your extension is deactivated
 export function deactivate() {
-	fileService?.dispose();
+	if (fileService) {
+		fileService.dispose();
+	}
 }

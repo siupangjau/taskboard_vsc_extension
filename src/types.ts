@@ -7,6 +7,7 @@ export interface Ticket {
   status: TicketStatus;
   createdAt: string;
   updatedAt: string;
+  position: number;
 }
 
 export interface Column {
