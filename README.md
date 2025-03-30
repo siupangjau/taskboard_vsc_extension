@@ -2,14 +2,14 @@
 
 A Visual Studio Code extension that provides a simple, efficient Kanban board for managing tasks directly within your editor. Perfect for developers who want to track their tasks without leaving VS Code.
 
-![TaskBoard Demo](images/taskboard-demo.png)
-
 ## Features
 
 ### 🎯 Task Management
 - Create, edit, and organize tasks in a Kanban-style board
-- Drag-and-drop tasks between status columns
-- Quick status updates via dropdown menu
+- Smooth drag-and-drop functionality with visual feedback
+- Reorder tickets within columns
+- Move tickets between columns
+- Quick status updates via drag-and-drop
 - Automatic timestamp tracking for task creation and updates
 
 ### 📋 Board Organization
@@ -18,13 +18,21 @@ A Visual Studio Code extension that provides a simple, efficient Kanban board fo
   - In Progress
   - Done
 - Clean, VS Code-native interface
-- Persistent board state
+- Persistent board state and ticket order
+- Visual drop previews when moving tickets
 
 ### 💾 Data Storage
 - Support for both JSON and CSV file formats
 - Auto-save functionality
 - File watching for real-time updates
 - Proper handling of special characters and formatting
+
+### 🎨 User Experience
+- Smooth animations and transitions
+- Clear visual feedback during drag operations
+- Drop previews for better positioning
+- Responsive layout that adapts to your window size
+- Native VS Code theming support
 
 ## Getting Started
 
@@ -44,9 +52,10 @@ A Visual Studio Code extension that provides a simple, efficient Kanban board fo
 
 ### Managing Tasks
 - **Create Task**: Click "Add" in any column
+- **Edit Task**: Click on the task title or description
 - **Move Task**: 
-  - Drag and drop between columns, or
-  - Use the status dropdown in the task
+  - Drag and drop between or within columns
+  - Visual preview shows where the task will be placed
 - **Delete Task**: Click the delete button on the task
 
 ### Auto-save
@@ -61,26 +70,27 @@ All changes are automatically saved to your board file. No manual saving require
     {
       "id": "todo",
       "name": "To Do",
-      "tickets": [...]
-    },
-    {
-      "id": "in-progress",
-      "name": "In Progress",
-      "tickets": [...]
-    },
-    {
-      "id": "done",
-      "name": "Done",
-      "tickets": [...]
+      "tickets": [
+        {
+          "id": "ticket-1",
+          "title": "Example Task",
+          "description": "Task description",
+          "status": "todo",
+          "createdAt": "2024-03-26T16:00:00.000Z",
+          "updatedAt": "2024-03-26T16:00:00.000Z",
+          "position": 1000
+        }
+      ]
     }
   ]
 }
 ```
 
 ### CSV Format
+The CSV format includes all task fields in a flat structure:
 ```csv
-id,title,description,status,createdAt,updatedAt
-ticket-1,Task 1,Description 1,todo,2024-03-19T10:00:00Z,2024-03-19T10:00:00Z
+id,title,description,status,createdAt,updatedAt,position
+ticket-1,Example Task,Task description,todo,2024-03-26T16:00:00.000Z,2024-03-26T16:00:00.000Z,1000
 ```
 
 ## Requirements
@@ -92,7 +102,7 @@ ticket-1,Task 1,Description 1,todo,2024-03-19T10:00:00Z,2024-03-19T10:00:00Z
 
 ### Setup
 ```bash
-git clone [repository-url]
+git clone https://github.com/siupangjau/taskboard_vsc_extension.git
 cd taskboard
 npm install
 ```
@@ -109,15 +119,11 @@ npm run compile
 
 ## Contributing
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Found a bug or have a feature request? Please open an issue on our [GitHub repository](https://github.com/siupangjau/taskboard_vsc_extension).
 
 ## License
 
-[MIT License](LICENSE)
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgments
 

@@ -2,12 +2,25 @@
   "name": "taskboard",
   "displayName": "TaskBoard",
   "description": "Simple and efficient Kanban board for managing tasks directly in VS Code",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "publisher": "BenLe",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/siupangjau/taskboard_vsc_extension"
+  },
+  "icon": "images/icon.png",
   "engines": {
     "vscode": "^1.87.0"
   },
   "categories": [
     "Other"
+  ],
+  "keywords": [
+    "kanban",
+    "task",
+    "board",
+    "project management",
+    "todo"
   ],
   "activationEvents": [
     "onCommand:taskboard.createBoard",
@@ -45,6 +58,7 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx}\""
   },
   "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
     "@types/react": "^18.2.66",
@@ -56,13 +70,17 @@
     "@vscode/test-electron": "^2.3.9",
     "esbuild": "^0.20.1",
     "eslint": "^8.56.0",
+    "fs-extra": "^11.3.0",
     "prettier": "^3.2.5",
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@vscode/codicons": "^0.0.36",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-beautiful-dnd": "^13.1.1",
-    "@types/react-beautiful-dnd": "^13.1.8"
+    "react-icons": "^5.5.0"
   }
 }

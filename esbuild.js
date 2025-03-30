@@ -1,5 +1,6 @@
 const esbuild = require("esbuild");
 const path = require('path');
+const fs = require('fs-extra');
 
 const isWatch = process.argv.includes('--watch');
 const isProduction = process.argv.includes('--production');
@@ -24,6 +25,31 @@ const esbuildProblemMatcherPlugin = {
 	},
 };
 
+/**
+ * @type {import('esbuild').Plugin}
+ */
+const copyCodiconsPlugin = {
+	name: 'copy-codicons',
+	setup(build) {
+		build.onEnd(async () => {
+			const codiconsDir = path.join(__dirname, 'node_modules', '@vscode', 'codicons', 'dist');
+			const outDir = path.join(__dirname, 'out');
+
+			try {
+				await fs.copy(codiconsDir, path.join(outDir, 'codicons'), {
+					filter: (src) => {
+						const filename = path.basename(src);
+						return filename === 'codicon.css' || filename === 'codicon.ttf';
+					}
+				});
+				console.log('Codicons copied successfully');
+			} catch (err) {
+				console.error('Error copying codicons:', err);
+			}
+		});
+	}
+};
+
 /** @type {import('esbuild').BuildOptions} */
 const extensionConfig = {
 	entryPoints: ['src/extension.ts'],
@@ -37,6 +63,7 @@ const extensionConfig = {
 	minify: isProduction,
 	plugins: [
 		esbuildProblemMatcherPlugin,
+		copyCodiconsPlugin
 	],
 };
 
@@ -67,7 +94,7 @@ async function build() {
 		if (isWatch) {
 			const extensionCtx = await esbuild.context(extensionConfig);
 			const webviewCtx = await esbuild.context(webviewConfig);
-			
+
 			await Promise.all([
 				extensionCtx.watch(),
 				webviewCtx.watch()

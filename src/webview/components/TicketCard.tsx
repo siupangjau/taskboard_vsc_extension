@@ -1,208 +1,283 @@
 import * as React from 'react';
-import { Draggable } from 'react-beautiful-dnd';
-import { Ticket, TicketStatus } from '../../types';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { HiPencil, HiTrash, HiX, HiCheck } from 'react-icons/hi';
+import { Ticket, TicketStatus } from '../types';
+import { Button } from './common/Button';
+import { Input } from './common/Input';
+import { TextArea } from './common/TextArea';
+import { styles } from '../styles/components';
+import { theme } from '../styles/theme';
+
+type PointerEventsType = 'none' | 'auto';
 
 interface TicketCardProps {
   ticket: Ticket;
   index: number;
   onDelete: (ticket: Ticket) => void;
-  onStatusChange: (ticket: Ticket, newStatus: TicketStatus) => void;
+  onUpdate: (ticket: Ticket, updates: { title?: string; description?: string; status?: TicketStatus }) => void;
 }
 
-const TicketCard: React.FC<TicketCardProps> = ({ ticket, index, onDelete, onStatusChange }) => {
-  const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
+export const TicketCard: React.FC<TicketCardProps> = React.memo(({
+  ticket,
+  index,
+  onDelete,
+  onUpdate
+}) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+  const [isConfirming, setIsConfirming] = React.useState(false);
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [editedTitle, setEditedTitle] = React.useState(ticket.title);
+  const [editedDescription, setEditedDescription] = React.useState(ticket.description);
 
-  // Validate ticket data
-  if (!ticket || !ticket.id) {
-    console.error('TicketCard: Invalid ticket data:', ticket);
-    return null;
-  }
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({
+    id: ticket.id,
+    data: ticket
+  });
 
-  console.log('TicketCard: Rendering ticket:', { id: ticket.id, index, status: ticket.status });
-  
-  const handleDeleteClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent drag from starting
-    setShowDeleteConfirm(true);
+  const style = {
+    ...styles.ticket.container,
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    cursor: isEditing ? 'default' : 'grab',
+    position: 'relative' as const,
+    backgroundColor: theme.colors.background,
+    marginBottom: theme.spacing.sm,
   };
 
-  const handleConfirmDelete = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent drag from starting
-    onDelete(ticket);
-    setShowDeleteConfirm(false);
-  };
+  const dragHandleRef = React.useRef<HTMLDivElement>(null);
 
-  const handleCancelDelete = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent drag from starting
-    setShowDeleteConfirm(false);
-  };
+  const handleDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    e.stopPropagation(); // Prevent drag from starting
-    const newStatus = e.target.value as TicketStatus;
-    if (newStatus !== ticket.status) {
-      onStatusChange(ticket, newStatus);
+    if (!isConfirming) {
+      setIsConfirming(true);
+    } else {
+      onDelete(ticket);
+      setIsConfirming(false);
     }
   };
 
-  return (
-    <Draggable draggableId={ticket.id} index={index}>
-      {(provided, snapshot) => {
-        console.log('TicketCard: Draggable render:', { 
-          id: ticket.id, 
-          status: ticket.status,
-          isDragging: snapshot.isDragging,
-          draggableId: provided.draggableProps['data-rbd-draggable-id']
-        });
-        return (
-          <div
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            data-testid={`draggable-${ticket.id}`}
-            style={{
-              ...provided.draggableProps.style,
-              padding: '1rem',
-              marginBottom: '0.5rem',
-              background: snapshot.isDragging
-                ? 'var(--vscode-editor-selectionBackground)'
-                : 'var(--vscode-editor-background)',
-              border: '1px solid var(--vscode-editor-lineHighlightBorder)',
-              borderRadius: '3px',
-              boxShadow: snapshot.isDragging
-                ? '0 4px 8px rgba(0, 0, 0, 0.2)'
-                : 'none',
-              userSelect: 'none',
-              cursor: 'grab',
-              position: 'relative'
-            }}
-          >
-            <div style={{ 
-              position: 'absolute',
-              top: '0.5rem',
-              right: '0.5rem',
-              display: 'flex',
-              gap: '0.5rem'
-            }}>
-              <button
-                onClick={handleDeleteClick}
-                style={{
-                  background: 'var(--vscode-errorForeground)',
-                  color: 'white',
-                  border: 'none',
-                  padding: '2px 6px',
-                  borderRadius: '3px',
-                  cursor: 'pointer',
-                  fontSize: '0.8rem'
-                }}
-              >
-                Delete
-              </button>
-            </div>
+  const handleCancelDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsConfirming(false);
+  };
 
-            {showDeleteConfirm && (
-              <div style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                background: 'var(--vscode-editor-background)',
-                border: '1px solid var(--vscode-editor-lineHighlightBorder)',
-                borderRadius: '4px',
-                padding: '1rem',
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                zIndex: 1000,
-                minWidth: '200px'
-              }}>
-                <p style={{
-                  margin: '0 0 1rem 0',
-                  color: 'var(--vscode-editor-foreground)'
-                }}>
-                  Are you sure you want to delete ticket "{ticket.title}"?
-                </p>
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'flex-end',
-                  gap: '0.5rem'
-                }}>
-                  <button
-                    onClick={handleConfirmDelete}
-                    style={{
-                      background: 'var(--vscode-errorForeground)',
-                      color: 'white',
-                      border: 'none',
-                      padding: '4px 8px',
-                      borderRadius: '3px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Delete
-                  </button>
-                  <button
-                    onClick={handleCancelDelete}
-                    style={{
-                      background: 'var(--vscode-button-secondaryBackground)',
-                      color: 'var(--vscode-button-secondaryForeground)',
-                      border: 'none',
-                      padding: '4px 8px',
-                      borderRadius: '3px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            )}
+  const handleEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsEditing(true);
+  };
 
-            <h3 style={{
-              margin: '0 0 0.5rem 0',
-              color: 'var(--vscode-editor-foreground)',
-              fontSize: '1rem',
-              paddingRight: '60px'
-            }}>
-              {ticket.title}
-            </h3>
-            <p style={{
-              margin: 0,
-              color: 'var(--vscode-descriptionForeground)',
-              fontSize: '0.9rem',
-              whiteSpace: 'pre-wrap'
-            }}>
-              {ticket.description}
-            </p>
-            <div style={{
-              marginTop: '0.5rem',
-              fontSize: '0.8rem',
-              color: 'var(--vscode-descriptionForeground)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
-            }}>
-              Status: 
-              <select
-                value={ticket.status}
-                onChange={handleStatusChange}
-                onClick={e => e.stopPropagation()} // Prevent drag from starting
+  const handleSubmitEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (editedTitle.trim() && (editedTitle !== ticket.title || editedDescription !== ticket.description)) {
+      onUpdate(ticket, {
+        title: editedTitle.trim(),
+        description: editedDescription.trim()
+      });
+    }
+    setIsEditing(false);
+  };
+
+  const handleCancelEdit = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setEditedTitle(ticket.title);
+    setEditedDescription(ticket.description);
+    setIsEditing(false);
+  };
+
+  if (isEditing) {
+    return (
+      <div style={style} ref={setNodeRef}>
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 1000,
+            pointerEvents: 'auto' as PointerEventsType,
+            backgroundColor: theme.colors.background,
+            padding: theme.spacing.sm,
+            borderRadius: parseInt(theme.borderRadius.sm),
+            boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+          }}
+          onClick={e => e.stopPropagation()}
+          onMouseDown={e => e.stopPropagation()}
+          onPointerDown={e => e.stopPropagation()}
+        >
+          <form onSubmit={handleSubmitEdit} style={styles.form.container}>
+            <Input
+              type="text"
+              value={editedTitle}
+              onChange={(e) => setEditedTitle(e.target.value)}
+              placeholder="Ticket title"
+              style={styles.input.field}
+              required
+              autoFocus
+            />
+            <TextArea
+              value={editedDescription}
+              onChange={(e) => setEditedDescription(e.target.value)}
+              placeholder="Description"
+              style={styles.input.field}
+              required
+            />
+            <div style={styles.form.actions}>
+              <Button
+                type="button"
+                onClick={handleCancelEdit}
+                title="Cancel editing"
                 style={{
-                  background: 'var(--vscode-dropdown-background)',
-                  color: 'var(--vscode-dropdown-foreground)',
-                  border: '1px solid var(--vscode-dropdown-border)',
-                  borderRadius: '3px',
-                  padding: '2px 4px',
-                  fontSize: '0.8rem',
+                  padding: '6px',
+                  minWidth: '32px',
+                  height: '32px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginRight: '4px',
                   cursor: 'pointer'
                 }}
               >
-                <option value="todo">Todo</option>
-                <option value="in-progress">In Progress</option>
-                <option value="done">Done</option>
-              </select>
+                <HiX size={16} />
+              </Button>
+              <Button
+                type="submit"
+                title="Save changes"
+                style={{
+                  padding: '6px',
+                  minWidth: '32px',
+                  height: '32px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  backgroundColor: theme.colors.button.primary.bg,
+                  color: theme.colors.button.primary.text
+                }}
+              >
+                <HiCheck size={16} />
+              </Button>
             </div>
-          </div>
-        );
-      }}
-    </Draggable>
-  );
-};
+          </form>
+        </div>
+      </div>
+    );
+  }
 
-export default TicketCard; 
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        if (!isConfirming) {
+          setIsHovered(false);
+        }
+      }}
+      {...attributes}
+      {...listeners}
+    >
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        pointerEvents: isDragging ? 'none' : 'auto'
+      }}>
+        <h3 style={styles.ticket.title}>{ticket.title}</h3>
+        {(isHovered || isConfirming) && !isDragging && (
+          <div
+            style={{
+              ...styles.ticket.actions,
+              position: 'relative',
+              zIndex: isConfirming ? 1000 : 'auto',
+              backgroundColor: isConfirming ? theme.colors.background : undefined,
+              padding: isConfirming ? theme.spacing.sm : undefined,
+              borderRadius: isConfirming ? parseInt(theme.borderRadius.sm) : undefined,
+              boxShadow: isConfirming ? '0 2px 8px rgba(0,0,0,0.15)' : undefined,
+            }}
+            onClick={e => e.stopPropagation()}
+            onMouseDown={e => e.stopPropagation()}
+            onPointerDown={e => e.stopPropagation()}
+            onMouseEnter={e => e.stopPropagation()}
+            onMouseLeave={e => {
+              e.stopPropagation();
+              if (!isConfirming) {
+                setIsHovered(false);
+              }
+            }}
+          >
+            {!isConfirming && (
+              <Button
+                onClick={handleEdit}
+                title="Edit ticket"
+                style={{
+                  padding: '6px',
+                  minWidth: '32px',
+                  height: '32px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginRight: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                <HiPencil size={16} />
+              </Button>
+            )}
+            <Button
+              onClick={handleDelete}
+              title={isConfirming ? "Click again to confirm delete" : "Delete ticket"}
+              style={{
+                padding: '6px',
+                minWidth: '32px',
+                height: '32px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: isConfirming ? theme.colors.button.danger.bg : undefined,
+                color: isConfirming ? theme.colors.button.danger.text : undefined,
+                marginRight: isConfirming ? '4px' : '0',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              {isConfirming ? <HiCheck size={16} /> : <HiTrash size={16} />}
+            </Button>
+            {isConfirming && (
+              <Button
+                onClick={handleCancelDelete}
+                title="Cancel delete"
+                style={{
+                  padding: '6px',
+                  minWidth: '32px',
+                  height: '32px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer'
+                }}
+              >
+                <HiX size={16} />
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+      <p style={styles.ticket.description}>{ticket.description}</p>
+    </div>
+  );
+}); 
