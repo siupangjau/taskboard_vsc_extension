@@ -33,9 +33,10 @@ const copyCodiconsPlugin = {
 	setup(build) {
 		build.onEnd(async () => {
 			const codiconsDir = path.join(__dirname, 'node_modules', '@vscode', 'codicons', 'dist');
-			const outDir = path.join(__dirname, 'out');
+			const outDir = path.join(__dirname, 'extension', 'out');
 
 			try {
+				await fs.ensureDir(outDir);
 				await fs.copy(codiconsDir, path.join(outDir, 'codicons'), {
 					filter: (src) => {
 						const filename = path.basename(src);
@@ -54,7 +55,7 @@ const copyCodiconsPlugin = {
 const extensionConfig = {
 	entryPoints: ['src/extension.ts'],
 	bundle: true,
-	outfile: 'out/extension.js',
+	outfile: 'extension/out/extension.js',
 	external: ['vscode'],
 	format: 'cjs',
 	platform: 'node',
@@ -71,7 +72,7 @@ const extensionConfig = {
 const webviewConfig = {
 	entryPoints: ['src/webview/index.tsx'],
 	bundle: true,
-	outfile: 'out/webview.js',
+	outfile: 'extension/out/webview.js',
 	format: 'iife',
 	platform: 'browser',
 	target: 'es2020',

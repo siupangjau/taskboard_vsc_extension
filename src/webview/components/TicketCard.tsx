@@ -119,7 +119,7 @@ export const TicketCard: React.FC<TicketCardProps> = React.memo(({
           onMouseDown={e => e.stopPropagation()}
           onPointerDown={e => e.stopPropagation()}
         >
-          <form onSubmit={handleSubmitEdit} style={styles.form.container}>
+          <form onSubmit={handleSubmitEdit}>
             <Input
               type="text"
               value={editedTitle}

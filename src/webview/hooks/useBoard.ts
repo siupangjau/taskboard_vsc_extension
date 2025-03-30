@@ -137,7 +137,7 @@ export const useBoard = (): UseBoardResult => {
         };
 
         const newColumns = board.columns.map(col => {
-            if (col.id === ticket.status && updates.status !== col.id) {
+            if (col.id === ticket.status && updates.status && updates.status !== col.id) {
                 // Remove from old column
                 return {
                     ...col,
@@ -150,10 +150,10 @@ export const useBoard = (): UseBoardResult => {
                 updatedTicket.position = maxPosition + 1000;
                 return {
                     ...col,
-                    tickets: [...col.tickets, updatedTicket].sort((a, b) => a.position - b.position)
+                    tickets: [...col.tickets, updatedTicket].sort((a, b) => (a.position || 0) - (b.position || 0))
                 };
             }
-            if (col.id === ticket.status && !updates.status) {
+            if (col.id === ticket.status && (!updates.status || updates.status === col.id)) {
                 // Update in same column
                 return {
                     ...col,
